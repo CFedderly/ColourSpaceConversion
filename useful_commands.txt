@@ -1,0 +1,10 @@
+// Just needed a place to store commands I might forget
+
+// need to ssh into one of the lab machines
+ssh <username>@c[69=101].seng.uvic.ca
+
+//compile with static libraries
+arm-linux-gnueabi-gcc -static -march=armv5 file.c -o file.exe
+
+// simulate the resulting executable with simulation arm
+qemu-arm file.exe

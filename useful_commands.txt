@@ -1,10 +1,33 @@
 // Just needed a place to store commands I might forget
 
+
+============ Setting Up ARM Compiler and Simulation =====================
 // need to ssh into one of the lab machines
 ssh <username>@c[69=101].seng.uvic.ca
 
+//setup ARM compiler for simulation 
+http://stackoverflow.com/questions/14180185/gcc-arm-linux-gnueabi-command-not-found
+
+//locate path of ARM compiler
+locate arm-none-linux-gnueabi-gcc
+
+//add path of ARM compiler to environment variables
+PATH=<path-to-compiler>:$PATH
+
+//double check that path was added
+echo $PATH
+
 //compile with static libraries
-arm-linux-gnueabi-gcc -static -march=armv5 file.c -o file.exe
+arm-none-linux-gnueabi-gcc -static -march=armv5 file.c -o file.exe
 
 // simulate the resulting executable with simulation arm
 qemu-arm file.exe
+
+=========== Profile With gprof =========================================
+tutorial - http://www.thegeekstuff.com/2012/08/gprof-tutorial/
+include "-pg" flag during compilation
+run the executable to produce gmon.out
+profile the execution and record data in text file:
+	gprof file.exe gmon.out > analysis.txt
+use "-b" flag to suppress verbose output:
+	gprof -b file.exe gmon.out > analysis.txt

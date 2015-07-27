@@ -4,6 +4,9 @@
  * Colour Space Conversion Project
  */
 
+#ifndef IMAGE
+#define IMAGE
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -44,6 +47,20 @@ typedef struct RGB_t {
 	unsigned char blue;
 } RGB_t;
 
+/* FIXED POINT
+typedef struct YCC_t {
+	unsigned char y;
+	unsigned char cb;
+	unsigned char cr;
+} YCC_t;*/
+
+/*FLOATING POINT*/
+typedef struct YCC_t {
+	float y;
+	float cb;
+	float cr;
+} YCC_t;
+
 typedef struct rgb_array {
 	int32_t width;
 	int32_t height;
@@ -53,5 +70,8 @@ typedef struct rgb_array {
 
 void get_bmp(char*, bmp_info*, rgb_array*);
 void read_bmp_info(FILE*, bmp_info*);
+void image_data_to_file(unsigned char*, bmp_info*);
 void get_pixel_array(unsigned char*, rgb_array*);
 void* mmalloc(size_t);
+
+#endif

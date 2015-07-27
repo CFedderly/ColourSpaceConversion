@@ -24,27 +24,17 @@ void get_bmp(char* filename, bmp_info* bmp, rgb_array* rgb) {
 	// read the bitmap file info and header part
 	read_bmp_info(file, bmp);
 
-	// use offset value from header to go to bitmap data
-	fseek(file, bmp->offset, SEEK_SET);
-
 	size_t img_size = bmp->size_bytes;
 	unsigned char* img_data = mmalloc(img_size);
 
-	FILE* file2 = fopen("test.txt", "wb");
 	int file1 = open(filename, O_RDONLY);
 	struct stat file_stat;
 	fstat(file1, &file_stat);
 	char* p = mmap(NULL, file_stat.st_size, PROT_READ, MAP_SHARED, file1, 0);
-
 	memcpy(img_data, p + bmp->offset, (int) img_size);
-	fwrite(img_data, sizeof(char), (int) img_size, file2);
 
-	fclose(file2);
-	int i;
-	for(i = 0; i < (int) img_size; i++) {
-		printf("%d", img_data[i]);
-	}
-
+	// width and height need to be a multiple of 4 bytes?
+	// 24 bits per pixel -> 3 bytes per pixel 
 	rgb->width = bmp->width_px;
 	rgb->height = bmp->height_px;
 	rgb->bits_per_px = bmp->bits_per_px;
@@ -74,7 +64,12 @@ void read_bmp_info(FILE* f, bmp_info* bmp) {
 	fread(&bmp->v_resolution, sizeof(((bmp_info*)0)->v_resolution), 1, f);
 	fread(&bmp->num_colours, sizeof(((bmp_info*)0)->num_colours), 1, f);
 	fread(&bmp->num_important_colours, sizeof(((bmp_info*)0)->num_important_colours), 1, f);
+}
 
+void image_data_to_file(unsigned char* img_data, bmp_info* bmp) {
+	FILE* write_file = fopen("test.txt", "wb");
+	fwrite(img_data, bmp->size_bytes, 1, write_file);
+	fclose(write_file);
 }
 
 void get_pixel_array(unsigned char* img_data, rgb_array* rgb) {
@@ -84,6 +79,8 @@ void get_pixel_array(unsigned char* img_data, rgb_array* rgb) {
 	RGB_t** array = mmalloc(height * sizeof(RGB_t*));
 	RGB_t* temp = mmalloc(sizeof(RGB_t));
 
+	printf("width: %d\n", width);
+	printf("height: %d\n", height);
 	int i, j;
 	// for every row of pixels
 	for (i = 0; i < height; i++) {
@@ -94,8 +91,7 @@ void get_pixel_array(unsigned char* img_data, rgb_array* rgb) {
 			temp->green = *img_data++;
 			temp->blue = *img_data++;
 			array[i][j] = *temp;
-			//printf("%d r: %d g: %d b: %d\n", count, array[i][j].red, array[i][j].green, array[i][j].blue);
-			count++;
+			printf("%d %d r: %d g: %d b: %d\n", i, j, array[i][j].red, array[i][j].green, array[i][j].blue);
 		}
 	}
 	rgb->data_array = array;

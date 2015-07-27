@@ -35,11 +35,16 @@ int main(int argc, char* argv[]) {
 
 	bmp_info* bmp = mmalloc(sizeof(bmp_info));
 	rgb_array* rgb = mmalloc(sizeof(rgb_array));
-	// Usage : ./rgb_to_ycc <bmp file name>
 
 	get_bmp(argv[1], bmp, rgb);
 
-	free(rgb->data);
+	if (rgb->bits_per_px == 24) {
+		
+	} else {
+		printf("Can only read 24bpp bmp files to convert from rgb to ycc.\n");
+	}
+
+	free(rgb->data_array);
 	free(rgb);
 	free(bmp);
 

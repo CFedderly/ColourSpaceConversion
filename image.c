@@ -7,45 +7,7 @@
  * Manipulation - http://www.brackeen.com/vga/bitmaps.html
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-
-// As defined at https://en.wikipedia.org/wiki/BMP_file_format
-typedef struct bmp_info {
-
-// header fields
-	int16_t file_type;
-	int32_t size_bytes;
-	int16_t reserved_1;
-	int16_t reserved_2;
-	int32_t offset; // starting address of image data
-
-// info fields
-	int32_t header_size;
-	int32_t width_px;
-	int32_t height_px;
-	int16_t num_colour_planes;
-	int16_t bits_per_px;
-	int32_t compression;
-	int32_t image_size;
-	int32_t h_resolution;
-	int32_t v_resolution;
-	int32_t num_colours;
-	int32_t num_important_colours;
-
-} bmp_info;
-
-typedef struct rgb_array {
-	int32_t width;
-	int32_t height;
-	int16_t bits_per_px;
-	char* data;
-} rgb_array;
-
-void get_bmp(char*, bmp_info*, rgb_array*);
-void read_bmp_info(FILE*, bmp_info*);
-void* mmalloc(size_t);
+ #include "image.h"
 
 void get_bmp(char* filename, bmp_info* bmp, rgb_array* rgb) {
 
@@ -60,29 +22,34 @@ void get_bmp(char* filename, bmp_info* bmp, rgb_array* rgb) {
 	}
 
 	// read the bitmap file info and header part
-	//fread(bmp, sizeof(bmp_info), 1, file);
 	read_bmp_info(file, bmp);
 
-	printf("%d\n", bmp->offset);
-	printf("%d\n", bmp->image_size);
 	// use offset value from header to go to bitmap data
 	fseek(file, bmp->offset, SEEK_SET);
 
-	size_t img_size = bmp->image_size;
-	char* img_data = mmalloc(img_size);
+	size_t img_size = bmp->size_bytes;
+	unsigned char* img_data = mmalloc(img_size);
 
-	fread(img_data, img_size, 1, file);
+	FILE* file2 = fopen("test.txt", "wb");
+	int file1 = open(filename, O_RDONLY);
+	struct stat file_stat;
+	fstat(file1, &file_stat);
+	char* p = mmap(NULL, file_stat.st_size, PROT_READ, MAP_SHARED, file1, 0);
 
-	rgb->data = img_data;
+	memcpy(img_data, p + bmp->offset, (int) img_size);
+	fwrite(img_data, sizeof(char), (int) img_size, file2);
+
+	fclose(file2);
+	int i;
+	for(i = 0; i < (int) img_size; i++) {
+		printf("%d", img_data[i]);
+	}
+
 	rgb->width = bmp->width_px;
 	rgb->height = bmp->height_px;
 	rgb->bits_per_px = bmp->bits_per_px;
 
-	
-	printf("%s\n", rgb->data);
-	printf("%d\n", rgb->width);
-	printf("%d\n", rgb->height);
-	printf("%d\n", rgb->bits_per_px);
+	get_pixel_array(img_data, rgb);
 
 	fclose(file);
 }
@@ -108,19 +75,31 @@ void read_bmp_info(FILE* f, bmp_info* bmp) {
 	fread(&bmp->num_colours, sizeof(((bmp_info*)0)->num_colours), 1, f);
 	fread(&bmp->num_important_colours, sizeof(((bmp_info*)0)->num_important_colours), 1, f);
 
-	/*
-// info fields
-	int32_t header_size;
-	int32_t width_px;
-	int32_t height_px;
-	int16_t num_colour_planes;
-	int16_t bits_per_px;
-	int32_t compression;
-	int32_t image_size;
-	int32_t h_resolution;
-	int32_t v_resolution;
-	int32_t num_colours;
-	int32_t num_important_colours;*/
+}
+
+void get_pixel_array(unsigned char* img_data, rgb_array* rgb) {
+	int width = rgb->width;
+	int height = rgb->height;
+
+	RGB_t** array = mmalloc(height * sizeof(RGB_t*));
+	RGB_t* temp = mmalloc(sizeof(RGB_t));
+
+	int i, j;
+	// for every row of pixels
+	for (i = 0; i < height; i++) {
+		// allocate a RGB object for each pixel
+		array[i] = mmalloc(width * sizeof(RGB_t));
+		for (j = 0; j < width; j++) {
+			temp->red = *img_data++;
+			temp->green = *img_data++;
+			temp->blue = *img_data++;
+			array[i][j] = *temp;
+			//printf("%d r: %d g: %d b: %d\n", count, array[i][j].red, array[i][j].green, array[i][j].blue);
+			count++;
+		}
+	}
+	rgb->data_array = array;
+	free(temp);
 }
 
 void skip(FILE* f, int num_bytes) {

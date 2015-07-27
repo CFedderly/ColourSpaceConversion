@@ -1,6 +1,7 @@
 /* Charlotte Fedderly
  * Evan Murphy
  * SENG 440 Summer 2015
+ * Colour Space Conversion Project
  * Naive colour space conversion: RGB to YCC and YCC to RGB
  * Usage: ./csc <input type> <c1> <c2> <c3>
  * where input type is either rgb or ycc

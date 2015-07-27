@@ -1,3 +1,9 @@
+/* Charlotte Fedderly
+ * Evan Murphy
+ * SENG 440 Summer 2015
+ * Colour Space Conversion Project
+ */
+ 
 #include <stdio.h>
 #include <stdlib.h>
 

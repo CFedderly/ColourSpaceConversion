@@ -88,7 +88,7 @@ void get_pixel_array(unsigned char* img_data, rgb_array* rgb) {
 
 	int i, j, k;
 	// for every row of pixels
-	for (i = 0; i < 1; i++) {
+	for (i = 0; i < height; i++) {
 		// allocate a RGB object for each pixel
 		array[i] = mmalloc((width_px)* sizeof(RGB_t));
 		for (j = 0; j < width_px; j++) {

@@ -9,7 +9,7 @@
 
  #include "image.h"
 
-void get_bmp(char* filename, bmp_info* bmp, rgb_array* rgb) {
+void get_bmp(char* filename, bmp_info* bmp, /*rgb_array* rgb*/ rgb_prime_array* rgb) {
 
 	FILE* file;
 
@@ -39,7 +39,8 @@ void get_bmp(char* filename, bmp_info* bmp, rgb_array* rgb) {
 	rgb->height = bmp->height_px;
 	rgb->bits_per_px = bmp->bits_per_px;
 
-	get_pixel_array(img_data, rgb);
+	//get_pixel_array(img_data, rgb);
+	get_pixel_prime_array(img_data, rgb);
 
 	fclose(file);
 }
@@ -79,8 +80,6 @@ void get_pixel_array(unsigned char* img_data, rgb_array* rgb) {
 	RGB_t** array = mmalloc(height * sizeof(RGB_t*));
 	RGB_t* temp = mmalloc(sizeof(RGB_t));
 
-	printf("width: %d\n", width);
-	printf("height: %d\n", height);
 	int i, j;
 	// for every row of pixels
 	for (i = 0; i < height; i++) {
@@ -91,18 +90,35 @@ void get_pixel_array(unsigned char* img_data, rgb_array* rgb) {
 			temp->green = *img_data++;
 			temp->blue = *img_data++;
 			array[i][j] = *temp;
-			printf("%d %d r: %d g: %d b: %d\n", i, j, array[i][j].red, array[i][j].green, array[i][j].blue);
+			//printf("%d %d r: %d g: %d b: %d\n", i, j, array[i][j].red, array[i][j].green, array[i][j].blue);
 		}
 	}
 	rgb->data_array = array;
 	free(temp);
 }
 
-void skip(FILE* f, int num_bytes) {
-	int i;
-	for (i = 0; i < num_bytes; i++) {
-		fgetc(f);
+void get_pixel_prime_array(unsigned char* img_data, rgb_prime_array* rgb) {
+	int width = rgb->width;
+	int height = rgb->height;
+
+	RGB_prime_t** array = mmalloc(height * sizeof(RGB_prime_t*));
+	RGB_prime_t* temp = mmalloc(sizeof(RGB_prime_t));
+
+	int i, j;
+	// for every row of pixels
+	for (i = 0; i < height; i++) {
+		// allocate a RGB object for each pixel
+		array[i] = mmalloc(width * sizeof(RGB_prime_t));
+		for (j = 0; j < width; j++) {
+			temp->red = ((float) *img_data++) / RGB_NORMALIZE;
+			temp->green = ((float) *img_data++) / RGB_NORMALIZE;
+			temp->blue = ((float) *img_data++) / RGB_NORMALIZE;
+			array[i][j] = *temp;
+			//printf("%d %d r: %f g: %f b: %f\n", i, j, array[i][j].red, array[i][j].green, array[i][j].blue);
+		}
 	}
+	rgb->data_array = array;
+	free(temp);
 }
 
 // Wrapper function for malloc

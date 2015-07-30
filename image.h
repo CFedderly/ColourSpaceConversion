@@ -71,18 +71,31 @@ typedef struct YCC_prime_t {
 } YCC_prime_t;
 
 typedef struct rgb_array {
-	int32_t width;
+	int32_t width_px;
+	int32_t width_bytes;
 	int32_t height;
 	int16_t bits_per_px;
+	int8_t row_padding;
 	RGB_t** data_array;
 } rgb_array;
 
 typedef struct rgb_prime_array {
-	int32_t width;
+	int32_t width_px;
+	int32_t width_bytes;
 	int32_t height;
 	int16_t bits_per_px;
+	int8_t row_padding;
 	RGB_prime_t** data_array;
 } rgb_prime_array;
+
+typedef struct ycc_prime_array {
+	int32_t width_px;
+	int32_t width_bytes;
+	int32_t height;
+	int16_t bits_per_px;
+	int8_t row_padding;
+	YCC_prime_t** data_array;
+} ycc_prime_array;
 
 void get_bmp(char*, bmp_info*, rgb_prime_array*);
 void read_bmp_info(FILE*, bmp_info*);

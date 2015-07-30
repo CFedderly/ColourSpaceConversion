@@ -8,8 +8,9 @@
  */
 
  #include "image.h"
+ #include <math.h>
 
-void get_bmp(char* filename, bmp_info* bmp, /*rgb_array* rgb*/ rgb_prime_array* rgb) {
+void get_bmp(char* filename, bmp_info* bmp, rgb_prime_array* rgb) {
 
 	FILE* file;
 
@@ -33,9 +34,13 @@ void get_bmp(char* filename, bmp_info* bmp, /*rgb_array* rgb*/ rgb_prime_array* 
 	char* p = mmap(NULL, file_stat.st_size, PROT_READ, MAP_SHARED, file1, 0);
 	memcpy(img_data, p + bmp->offset, (int) img_size);
 
+	image_data_to_file(img_data, bmp);
 	// width and height need to be a multiple of 4 bytes?
-	// 24 bits per pixel -> 3 bytes per pixel 
-	rgb->width = bmp->width_px;
+	// 24 bits- per pixel -> 3 bytes per pixel 
+	// equation taken from https://en.wikipedia.org/wiki/BMP_file_format#Pixel_array_.28bitmap_data.29
+	rgb->width_bytes = (int) floor( ((float) (bmp->width_px * bmp->bits_per_px) + 31)/ 32)*4;
+	rgb->width_px = bmp->width_px;
+	rgb->row_padding = bmp->width_px % 4;
 	rgb->height = bmp->height_px;
 	rgb->bits_per_px = bmp->bits_per_px;
 
@@ -74,23 +79,28 @@ void image_data_to_file(unsigned char* img_data, bmp_info* bmp) {
 }
 
 void get_pixel_array(unsigned char* img_data, rgb_array* rgb) {
-	int width = rgb->width;
+	int width_px = rgb->width_px;
 	int height = rgb->height;
-
+	int padding = rgb->row_padding;
+	
 	RGB_t** array = mmalloc(height * sizeof(RGB_t*));
 	RGB_t* temp = mmalloc(sizeof(RGB_t));
 
-	int i, j;
+	int i, j, k;
 	// for every row of pixels
-	for (i = 0; i < height; i++) {
+	for (i = 0; i < 1; i++) {
 		// allocate a RGB object for each pixel
-		array[i] = mmalloc(width * sizeof(RGB_t));
-		for (j = 0; j < width; j++) {
-			temp->red = *img_data++;
-			temp->green = *img_data++;
+		array[i] = mmalloc((width_px)* sizeof(RGB_t));
+		for (j = 0; j < width_px; j++) {
 			temp->blue = *img_data++;
+			temp->green = *img_data++;
+			temp->red = *img_data++;
+
 			array[i][j] = *temp;
 			//printf("%d %d r: %d g: %d b: %d\n", i, j, array[i][j].red, array[i][j].green, array[i][j].blue);
+		}
+		for (k = 0; k < padding; k++) {
+			*img_data++;
 		}
 	}
 	rgb->data_array = array;
@@ -98,23 +108,28 @@ void get_pixel_array(unsigned char* img_data, rgb_array* rgb) {
 }
 
 void get_pixel_prime_array(unsigned char* img_data, rgb_prime_array* rgb) {
-	int width = rgb->width;
+	int width_px = rgb->width_px;
 	int height = rgb->height;
+	int padding = rgb->row_padding;
 
 	RGB_prime_t** array = mmalloc(height * sizeof(RGB_prime_t*));
 	RGB_prime_t* temp = mmalloc(sizeof(RGB_prime_t));
 
-	int i, j;
+	int i, j, k;
 	// for every row of pixels
 	for (i = 0; i < height; i++) {
 		// allocate a RGB object for each pixel
-		array[i] = mmalloc(width * sizeof(RGB_prime_t));
-		for (j = 0; j < width; j++) {
-			temp->red = ((float) *img_data++) / RGB_NORMALIZE;
-			temp->green = ((float) *img_data++) / RGB_NORMALIZE;
+		array[i] = mmalloc(width_px * sizeof(RGB_prime_t));
+		for (j = 0; j < width_px ; j++) {
 			temp->blue = ((float) *img_data++) / RGB_NORMALIZE;
+			temp->green = ((float) *img_data++) / RGB_NORMALIZE;			
+			temp->red = ((float) *img_data++) / RGB_NORMALIZE;
+
 			array[i][j] = *temp;
-			//printf("%d %d r: %f g: %f b: %f\n", i, j, array[i][j].red, array[i][j].green, array[i][j].blue);
+			printf("%d %d r: %f g: %f b: %f\n", i, j, array[i][j].red, array[i][j].green, array[i][j].blue);
+		}
+		for (k = 0; k < padding; k++) {
+			*img_data++;
 		}
 	}
 	rgb->data_array = array;

@@ -7,6 +7,12 @@
 #ifndef IMAGE
 #define IMAGE
 
+#define RGB_NORMALIZE 256
+#define RGB_FP_FACTOR 1024
+#define CONSTANT_FP_FACTOR 4096
+#define FP_DIVISOR 512
+#define SHIFT_BITS 13
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,12 +21,8 @@
 #include <sys/types.h>
 #include <sys/mman.h>
 #include <fcntl.h>
+#include <unistd.h>
 
-#define RGB_NORMALIZE 256
-#define RGB_FP_FACTOR 1024
-#define CONSTANT_FP_FACTOR 4096
-#define FP_DIVISOR 512
-#define SHIFT_BITS 13
 // As defined at https://en.wikipedia.org/wiki/BMP_file_format
 typedef struct bmp_info {
 
@@ -43,6 +45,8 @@ typedef struct bmp_info {
 	int32_t v_resolution;
 	int32_t num_colours;
 	int32_t num_important_colours;
+
+	unsigned char* image_data;
 
 } bmp_info;
 
@@ -74,7 +78,6 @@ typedef struct YCC_prime_t {
 
 typedef struct rgb_array {
 	int32_t width_px;
-	int32_t width_bytes;
 	int32_t height;
 	int16_t bits_per_px;
 	int8_t row_padding;
@@ -83,7 +86,6 @@ typedef struct rgb_array {
 
 typedef struct rgb_prime_array {
 	int32_t width_px;
-	int32_t width_bytes;
 	int32_t height;
 	int16_t bits_per_px;
 	int8_t row_padding;
@@ -92,18 +94,19 @@ typedef struct rgb_prime_array {
 
 typedef struct ycc_prime_array {
 	int32_t width_px;
-	int32_t width_bytes;
 	int32_t height;
 	int16_t bits_per_px;
 	int8_t row_padding;
 	YCC_prime_t** data_array;
 } ycc_prime_array;
 
-void get_bmp(char*, bmp_info*, rgb_prime_array*);
-void read_bmp_info(FILE*, bmp_info*);
-void image_data_to_file(unsigned char*, bmp_info*);
-void get_pixel_array(unsigned char*, rgb_array*);
-void get_pixel_prime_array(unsigned char*, rgb_prime_array*);
+bmp_info* get_bmp_info(char*);
+void free_bmp_info(bmp_info*);
+rgb_prime_array* get_pixel_array(bmp_info*);
+void free_pixel_array(rgb_prime_array*);
 void* mmalloc(size_t);
+static void read_bmp_info(FILE*, bmp_info*);
+static void image_data_to_file(unsigned char*, bmp_info*);
+static void get_rgb_pixel_array(unsigned char*, rgb_prime_array*);
 
 #endif

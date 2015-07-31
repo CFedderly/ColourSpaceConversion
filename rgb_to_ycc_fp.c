@@ -31,26 +31,20 @@ int main(int argc, char* argv[]) {
 		YCC_prime_t* temp = mmalloc(sizeof(YCC_prime_t));
 
 		int32_t r, g, b, y, cb, cr;
-		float division = (float) 1 / 512;
+		float division = (float) 1 / FP_DIVISOR;
 		int i, j;
 		// for every row of pixels
 		for (i = 0; i < rgb->height; i++) {
 			// allocate a RGB object for each pixel
 			ycc[i] = mmalloc(rgb->width_px * sizeof(YCC_prime_t));
 			for (j = 0; j < rgb->width_px; j++) {
-				r = rgb_arr[i][j].red * RGB_FIXED;
-				g = rgb_arr[i][j].green * RGB_FIXED;
-				b = rgb_arr[i][j].blue * RGB_FIXED;
-				// to optimize, store constants as ... constants
-				// WRONG:
-				// smaller power of 2 greater than max constant (0.439) is 1 
-				// to provide the right granularity (0.001) for the constants, need 10 bits (2^10)
-				// RGB values are 8 bit (2^8)
-				// 2^8 * 2^10 = 2^18 -> require 11 bits for YCC => shift by 7 bits
+				r = rgb_arr[i][j].red * RGB_FP_FACTOR;
+				g = rgb_arr[i][j].green * RGB_FP_FACTOR;
+				b = rgb_arr[i][j].blue * RGB_FP_FACTOR;
 				//printf("r: %d g: %d b: %d\n", r, g, b);
-				y = ((int) (0.257 * 4096) * r + (int) (0.504 * 4096) * g + (int) (0.098 * 4096) * b) >> 13;
-				cb = ((int)(-0.148 * 4096) * r - (int) (0.291 * 4096) * g + (int) (0.439 * 4096) * b) >> 13;
-				cr = ((int) (0.439 * 4096) * r - (int) (0.368 * 4096) * g - (int) (0.071 * 4096) * b) >> 13;
+				y = ((int) (0.257 * CONSTANT_FP_FACTOR) * r + (int) (0.504 * CONSTANT_FP_FACTOR) * g + (int) (0.098 * CONSTANT_FP_FACTOR) * b) >> SHIFT_BITS;
+				cb = ((int)(-0.148 * CONSTANT_FP_FACTOR) * r - (int) (0.291 * CONSTANT_FP_FACTOR) * g + (int) (0.439 * CONSTANT_FP_FACTOR) * b) >> SHIFT_BITS;
+				cr = ((int) (0.439 * CONSTANT_FP_FACTOR) * r - (int) (0.368 * CONSTANT_FP_FACTOR) * g - (int) (0.071 * CONSTANT_FP_FACTOR) * b) >> SHIFT_BITS;
 				//printf("%f y: %d cb: %d cr: %d\n", division, y, cb, cr);
 				temp->y = y * division + 16.0f;
 				temp->cb = cb * division + 128.0f;

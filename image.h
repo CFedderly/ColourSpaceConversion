@@ -17,8 +17,10 @@
 #include <fcntl.h>
 
 #define RGB_NORMALIZE 256
-#define RGB_FIXED 1024
-
+#define RGB_FP_FACTOR 1024
+#define CONSTANT_FP_FACTOR 4096
+#define FP_DIVISOR 512
+#define SHIFT_BITS 13
 // As defined at https://en.wikipedia.org/wiki/BMP_file_format
 typedef struct bmp_info {
 

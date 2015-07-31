@@ -16,6 +16,9 @@
 #include <sys/mman.h>
 #include <fcntl.h>
 
+#define RGB_NORMALIZE 256
+#define RGB_FIXED 1024
+
 // As defined at https://en.wikipedia.org/wiki/BMP_file_format
 typedef struct bmp_info {
 
@@ -47,31 +50,58 @@ typedef struct RGB_t {
 	unsigned char blue;
 } RGB_t;
 
-/* FIXED POINT
+typedef struct RGB_prime_t {
+	float red;
+	float green;
+	float blue;
+} RGB_prime_t;
+
+/* FIXED POINT*/
 typedef struct YCC_t {
 	unsigned char y;
 	unsigned char cb;
 	unsigned char cr;
-} YCC_t;*/
+} YCC_t;
 
 /*FLOATING POINT*/
-typedef struct YCC_t {
+typedef struct YCC_prime_t {
 	float y;
 	float cb;
 	float cr;
-} YCC_t;
+} YCC_prime_t;
 
 typedef struct rgb_array {
-	int32_t width;
+	int32_t width_px;
+	int32_t width_bytes;
 	int32_t height;
 	int16_t bits_per_px;
+	int8_t row_padding;
 	RGB_t** data_array;
 } rgb_array;
 
-void get_bmp(char*, bmp_info*, rgb_array*);
+typedef struct rgb_prime_array {
+	int32_t width_px;
+	int32_t width_bytes;
+	int32_t height;
+	int16_t bits_per_px;
+	int8_t row_padding;
+	RGB_prime_t** data_array;
+} rgb_prime_array;
+
+typedef struct ycc_prime_array {
+	int32_t width_px;
+	int32_t width_bytes;
+	int32_t height;
+	int16_t bits_per_px;
+	int8_t row_padding;
+	YCC_prime_t** data_array;
+} ycc_prime_array;
+
+void get_bmp(char*, bmp_info*, rgb_prime_array*);
 void read_bmp_info(FILE*, bmp_info*);
 void image_data_to_file(unsigned char*, bmp_info*);
 void get_pixel_array(unsigned char*, rgb_array*);
+void get_pixel_prime_array(unsigned char*, rgb_prime_array*);
 void* mmalloc(size_t);
 
 #endif

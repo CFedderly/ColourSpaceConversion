@@ -104,8 +104,10 @@ bmp_info* get_bmp_info(char*);
 void free_bmp_info(bmp_info*);
 rgb_prime_array* get_pixel_array(bmp_info*);
 void free_pixel_array(rgb_prime_array*);
+void write_to_bmp(bmp_info*, rgb_array*);
 void* mmalloc(size_t);
 static void read_bmp_info(FILE*, bmp_info*);
+static void write_bmp_info(FILE*, bmp_info*);
 static void image_data_to_file(unsigned char*, bmp_info*);
 static void get_rgb_pixel_array(unsigned char*, rgb_prime_array*);
 

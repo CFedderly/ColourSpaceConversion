@@ -11,6 +11,7 @@
  #include <math.h>
 
 bmp_info* get_bmp_info(char* filename) {
+	
 	FILE* file;
 
 	file = fopen(filename, "rb");
@@ -53,8 +54,6 @@ rgb_prime_array* get_pixel_array(bmp_info* bmp) {
 
 	rgb_prime_array* rgb = mmalloc(sizeof(rgb_prime_array));
 
-	//image_data_to_file(img_data, bmp);
-	// width and height need to be a multiple of 4 bytes?
 	rgb->width_px = bmp->width_px;
 	rgb->row_padding = bmp->width_px % 4;
 	rgb->height = bmp->height_px;
@@ -72,6 +71,14 @@ void free_pixel_array(rgb_prime_array* rgb) {
 	}
 	free(rgb->data_array);
 	free(rgb);
+}
+
+void write_to_bmp(bmp_info* bmp, rgb_array* rgb) {
+
+	FILE* file;
+	file = fopen("converted.txt", "wb");
+
+	write_bmp_info(file, bmp);
 }
 
 // Wrapper function for malloc
@@ -105,6 +112,28 @@ static void read_bmp_info(FILE* f, bmp_info* bmp) {
 	fread(&bmp->v_resolution, sizeof(((bmp_info*)0)->v_resolution), 1, f);
 	fread(&bmp->num_colours, sizeof(((bmp_info*)0)->num_colours), 1, f);
 	fread(&bmp->num_important_colours, sizeof(((bmp_info*)0)->num_important_colours), 1, f);
+}
+
+static void write_bmp_info(FILE* f, bmp_info* bmp) {
+	// read the header
+	fwrite(&bmp->file_type, sizeof(((bmp_info*)0)->file_type), 1, f);
+	fwrite(&bmp->size_bytes, sizeof(((bmp_info*)0)->size_bytes), 1, f);
+	fwrite(&bmp->reserved_1, sizeof(((bmp_info*)0)->reserved_1), 1, f);
+	fwrite(&bmp->reserved_2, sizeof(((bmp_info*)0)->reserved_2), 1, f);
+	fwrite(&bmp->offset, sizeof(((bmp_info*)0)->offset), 1, f);
+	
+	// info fields
+	fwrite(&bmp->header_size, sizeof(((bmp_info*)0)->header_size), 1, f);
+	fwrite(&bmp->width_px, sizeof(((bmp_info*)0)->width_px), 1, f);
+	fwrite(&bmp->height_px, sizeof(((bmp_info*)0)->height_px), 1, f);
+	fwrite(&bmp->num_colour_planes, sizeof(((bmp_info*)0)->num_colour_planes), 1, f);
+	fwrite(&bmp->bits_per_px, sizeof(((bmp_info*)0)->bits_per_px), 1, f);
+	fwrite(&bmp->compression, sizeof(((bmp_info*)0)->compression), 1, f);
+	fwrite(&bmp->image_size, sizeof(((bmp_info*)0)->image_size), 1, f);
+	fwrite(&bmp->h_resolution, sizeof(((bmp_info*)0)->h_resolution), 1, f);
+	fwrite(&bmp->v_resolution, sizeof(((bmp_info*)0)->v_resolution), 1, f);
+	fwrite(&bmp->num_colours, sizeof(((bmp_info*)0)->num_colours), 1, f);
+	fwrite(&bmp->num_important_colours, sizeof(((bmp_info*)0)->num_important_colours), 1, f);
 }
 
 static void image_data_to_file(unsigned char* img_data, bmp_info* bmp) {

@@ -74,7 +74,7 @@ rgb_array* allocate_rgb_array(int height, int width) {
 void free_rgb_array(rgb_array* rgb) {
 	int i;
 
-	for (i = 0; i < height; i++) {
+	for (i = 0; i < rgb->height; i++) {
 		free(rgb->data_array[i]);
 	}
 	free(rgb->data_array);

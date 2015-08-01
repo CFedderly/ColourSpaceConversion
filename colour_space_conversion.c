@@ -21,8 +21,8 @@ int main(int argc, char* argv[]) {
 		rgb_array* rgb_after = allocate_rgb_array(rgb->height, rgb->width_px);
 		convert_ycc_to_rgb(ycc, rgb_after);
 
-
 		free_ycc_array(ycc, rgb->height);
+		free_rgb_array(rgb_after);
 	} else {
 		printf("Can only read 24bpp bmp files to convert from rgb to ycc.\n");
 	}

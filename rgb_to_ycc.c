@@ -54,12 +54,13 @@ void free_ycc_array(YCC_prime_t** ycc, int height) {
 	free(ycc);
 }
 
-rgb_array* allocate_rgb_array(int height, int width) {
+rgb_array* allocate_rgb_array(int height, int width, int row_padding) {
 	int i;
 
 	rgb_array* rgb = mmalloc(sizeof(rgb_array));
 	rgb->height = height;
 	rgb->width_px = width;
+	rgb->row_padding = row_padding;
 
 	RGB_t** array = mmalloc(sizeof(RGB_t*) * height);
 	for (i = 0; i < height; i++) {

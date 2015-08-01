@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
 		YCC_prime_t** ycc = allocate_ycc_array(rgb->height, rgb->width_px);
 		convert_rgb_to_ycc(ycc, rgb);
 
-		rgb_array* rgb_after = allocate_rgb_array(rgb->height, rgb->width_px);
+		rgb_array* rgb_after = allocate_rgb_array(rgb->height, rgb->width_px, rgb->row_padding);
 		convert_ycc_to_rgb(ycc, rgb_after);
 		write_to_bmp(bmp, rgb_after);
 

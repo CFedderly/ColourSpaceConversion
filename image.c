@@ -76,9 +76,11 @@ void free_pixel_array(rgb_prime_array* rgb) {
 void write_to_bmp(bmp_info* bmp, rgb_array* rgb) {
 
 	FILE* file;
-	file = fopen("converted.txt", "wb");
+	file = fopen("converted.bmp", "wb");
 
 	write_bmp_info(file, bmp);
+
+	write_pixel_array(file, rgb);
 }
 
 // Wrapper function for malloc
@@ -136,10 +138,22 @@ static void write_bmp_info(FILE* f, bmp_info* bmp) {
 	fwrite(&bmp->num_important_colours, sizeof(((bmp_info*)0)->num_important_colours), 1, f);
 }
 
-static void image_data_to_file(unsigned char* img_data, bmp_info* bmp) {
-	FILE* write_file = fopen("test.txt", "wb");
-	fwrite(img_data, bmp->size_bytes, 1, write_file);
-	fclose(write_file);
+static void write_pixel_array(FILE* f, rgb_array* rgb) {
+
+	int i, j, k;
+	
+	char pad = '0';
+
+	for (i = 0; i < rgb->height; i++) {
+		for (j = 0; j < rgb->width_px ; j++) {
+			fwrite(&rgb->data_array[i][j].blue, sizeof(char), 1, f);
+			fwrite(&rgb->data_array[i][j].green, sizeof(char), 1, f);
+			fwrite(&rgb->data_array[i][j].red, sizeof(char), 1, f);
+		}
+		for (k = 0; k < rgb->row_padding; k++) {
+			fwrite(&pad, 1, sizeof(char), f);
+		}
+	}
 }
 
 static void get_rgb_pixel_array(unsigned char* img_data, rgb_prime_array* rgb) {
@@ -161,7 +175,7 @@ static void get_rgb_pixel_array(unsigned char* img_data, rgb_prime_array* rgb) {
 			temp->red = ((float) *img_data++) / RGB_NORMALIZE;
 
 			array[i][j] = *temp;
-			printf("%d %d r: %f g: %f b: %f\n", i, j, array[i][j].red, array[i][j].green, array[i][j].blue);
+			//printf("%d %d r: %f g: %f b: %f\n", i, j, array[i][j].red, array[i][j].green, array[i][j].blue);
 		}
 		for (k = 0; k < padding; k++) {
 			*img_data++;

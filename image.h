@@ -108,7 +108,7 @@ void write_to_bmp(bmp_info*, rgb_array*);
 void* mmalloc(size_t);
 static void read_bmp_info(FILE*, bmp_info*);
 static void write_bmp_info(FILE*, bmp_info*);
-static void image_data_to_file(unsigned char*, bmp_info*);
+static void write_pixel_array(FILE*, rgb_array*);
 static void get_rgb_pixel_array(unsigned char*, rgb_prime_array*);
 
 #endif

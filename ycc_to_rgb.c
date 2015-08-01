@@ -25,7 +25,7 @@ void convert_ycc_to_rgb(YCC_prime_t** ycc, rgb_array* rgb) {
 			rgb->data_array[i][j].green = (unsigned char) (g_f * RGB_NORMALIZE);
 			rgb->data_array[i][j].blue = (unsigned char) (b_f * RGB_NORMALIZE);
 
-			printf("%d %d r: %d g: %d b: %d\n", i, j, rgb->data_array[i][j].red, rgb->data_array[i][j].green, rgb->data_array[i][j].blue);
+			//printf("%d %d r: %d g: %d b: %d\n", i, j, rgb->data_array[i][j].red, rgb->data_array[i][j].green, rgb->data_array[i][j].blue);
 
 		}
 	}

@@ -1,5 +1,7 @@
 #include "image.h"
 #include "image.c"
+#include "rgb_to_ycc.c"
+#include "ycc_to_rgb.c"
 
 int main(int argc, char* argv[]) {
 
@@ -11,9 +13,16 @@ int main(int argc, char* argv[]) {
 	bmp_info* bmp = get_bmp_info(argv[1]);
 	rgb_prime_array* rgb = get_pixel_array(bmp);
 
+	//Make sure that the bmp file is 24bpp
 	if (rgb->bits_per_px == 24) {
-		//allocate_ycc_array()
-		//convert_ycc_to_rgb();
+		YCC_prime_t** ycc = allocate_ycc_array(rgb->height, rgb->width_px);
+		convert_rgb_to_ycc(ycc, rgb);
+
+		rgb_array* rgb_after = allocate_rgb_array(rgb->height, rgb->width_px);
+		convert_ycc_to_rgb(ycc, rgb_after);
+
+
+		free_ycc_array(ycc, rgb->height);
 	} else {
 		printf("Can only read 24bpp bmp files to convert from rgb to ycc.\n");
 	}

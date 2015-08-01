@@ -5,7 +5,7 @@
  */
  
  #include "image.h"
- 
+
 // Not optimized, uses floats
 void convert_ycc_to_rgb(YCC_prime_t** ycc, rgb_array* rgb) {
 		

@@ -17,7 +17,7 @@ void convert_ycc_to_rgb(YCC_prime_t** ycc, rgb_array* rgb) {
 			y = ycc[i][j].y;
 			cr = ycc[i][j].cr;
 			cb = ycc[i][j].cb;
-			r_f = 1.164 * (y - 16.0f) - 1.596 * (cr - 128.0f);
+			r_f = 1.164 * (y - 16.0f) + 1.596 * (cr - 128.0f);
 			g_f = 1.164 * (y - 16.0f) - 0.813 * (cr - 128.0f) - 0.391 * (cb - 128);
 			b_f = 1.164 * (y - 16.0f) + 2.018 * (cb - 128.0f);
 			//printf("%d %d r_f: %f g_f: %f b_f: %f\n", i, j, r_f, g_f, b_f);

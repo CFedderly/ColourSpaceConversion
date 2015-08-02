@@ -9,9 +9,9 @@
 
 #define RGB_NORMALIZE 256
 #define RGB_FP_FACTOR 1024
-#define CONSTANT_FP_FACTOR 4096
-#define FP_DIVISOR 512
-#define SHIFT_BITS 13
+#define CONSTANT_FP_FACTOR 8192
+#define FP_DIVISOR 2048
+#define SHIFT_BITS 12
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -25,11 +25,14 @@ void convert_rgb_to_ycc(YCC_prime_t** ycc, rgb_prime_array* rgb) {
 			y = ((int) (0.257 * CONSTANT_FP_FACTOR) * r + (int) (0.504 * CONSTANT_FP_FACTOR) * g + (int) (0.098 * CONSTANT_FP_FACTOR) * b) >> SHIFT_BITS;
 			cb = ((int)(-0.148 * CONSTANT_FP_FACTOR) * r - (int) (0.291 * CONSTANT_FP_FACTOR) * g + (int) (0.439 * CONSTANT_FP_FACTOR) * b) >> SHIFT_BITS;
 			cr = ((int) (0.439 * CONSTANT_FP_FACTOR) * r - (int) (0.368 * CONSTANT_FP_FACTOR) * g - (int) (0.071 * CONSTANT_FP_FACTOR) * b) >> SHIFT_BITS;
+			//printf("%d %d y: %d cb: %d cr: %d\n", i, j, y, cb, cr);
+
+			//printf("divisor: %f\n", division);
 			ycc[i][j].y = y * division + 16.0f;
 			ycc[i][j].cb = cb * division + 128.0f;
 			ycc[i][j].cr = cr * division + 128.0f;
 
-			//printf("%d %d y: %f cb: %f cr: %f\n", i, j, ycc[i][j].y, ycc[i][j].cb, ycc[i][j].cr);
+			printf("%d %d y: %f cb: %f cr: %f\n", i, j, ycc[i][j].y, ycc[i][j].cb, ycc[i][j].cr);
 		}
 	}
 }

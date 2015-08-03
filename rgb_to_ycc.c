@@ -14,14 +14,14 @@ void convert_rgb_to_ycc(ycc_prime_array* ycc, rgb_prime_array* rgb) {
 	// declare constants for all of the factors in the conversion
 	// use factor of 2^13, constants are signed ints
 	// these won't ever change, don't need to be computed dynamically
-	const int32_t y_r = 2106;
-	const int32_t y_b = 4129;
-	const int32_t y_g = 803;
-	const int32_t cb_r = -1213;
-	const int32_t cb_g = -2384;
-	const int32_t cb_b_cr_r = 3597;
-	const int32_t cr_g = -3015;
-	const int32_t cr_b = -582;
+	const int32_t y_r = 2105;
+	const int32_t y_b = 4128;
+	const int32_t y_g = 802;
+	const int32_t cb_r = -1212;
+	const int32_t cb_g = -2383;
+	const int32_t cb_b_cr_r = 3596;
+	const int32_t cr_g = -3014;
+	const int32_t cr_b = -581;
 
 	// suggest to the compiler to keep these variables in registers 
 	int32_t r, g, b;
@@ -78,7 +78,7 @@ void convert_rgb_to_ycc(ycc_prime_array* ycc, rgb_prime_array* rgb) {
 			ycc->data_array[i][j].cb = cb * division + 128.0f;
 			ycc->data_array[i][j].cr = cr * division + 128.0f;
 		
-			printf("%d %d y: %f cb: %f cr: %f\n", i, j, ycc->data_array[i][j].y, ycc->data_array[i][j].cb, ycc->data_array[i][j].cr);
+			//printf("%d %d y: %f cb: %f cr: %f\n", i, j, ycc->data_array[i][j].y, ycc->data_array[i][j].cb, ycc->data_array[i][j].cr);
 		}
 	}
 }

@@ -6,7 +6,7 @@
 
 #include "image.h"
 
-void convert_rgb_to_ycc(YCC_prime_t** ycc, rgb_prime_array* rgb) {
+void convert_rgb_to_ycc(ycc_prime_array* ycc, rgb_prime_array* rgb) {
 
 	RGB_prime_t** rgb_arr = rgb->data_array; 
 
@@ -15,45 +15,78 @@ void convert_rgb_to_ycc(YCC_prime_t** ycc, rgb_prime_array* rgb) {
 
 	int i, j;
 	// for every row of pixels
-	for (i = 0; i < rgb->height; i++) {
+	for (i = 0; i < ycc->height; i++) {
+		// for every pixel in the row
+		// average the conversion between the pixels in a 2x2 square of pixels -> get 1 pixel
+		// the ycc version of the bmp will have 1:4 pixels to the original bmp
+		for (j = 0; j < ycc->width_px; j++) {
 
-		for (j = 0; j < rgb->width_px; j++) {
+			y = cb = cr = 0;
 
-			r = rgb_arr[i][j].red * RGB_FP_FACTOR;
-			g = rgb_arr[i][j].green * RGB_FP_FACTOR;
-			b = rgb_arr[i][j].blue * RGB_FP_FACTOR;
-			y = ((int) (0.257 * CONSTANT_FP_FACTOR) * r + (int) (0.504 * CONSTANT_FP_FACTOR) * g + (int) (0.098 * CONSTANT_FP_FACTOR) * b) >> SHIFT_BITS;
-			cb = ((int)(-0.148 * CONSTANT_FP_FACTOR) * r - (int) (0.291 * CONSTANT_FP_FACTOR) * g + (int) (0.439 * CONSTANT_FP_FACTOR) * b) >> SHIFT_BITS;
-			cr = ((int) (0.439 * CONSTANT_FP_FACTOR) * r - (int) (0.368 * CONSTANT_FP_FACTOR) * g - (int) (0.071 * CONSTANT_FP_FACTOR) * b) >> SHIFT_BITS;
-			//printf("%d %d y: %d cb: %d cr: %d\n", i, j, y, cb, cr);
+			r = rgb_arr[(2*i)][(2*j)].red * RGB_FP_FACTOR;
+			g = rgb_arr[(2*i)][(2*j)].green * RGB_FP_FACTOR;
+			b = rgb_arr[(2*i)][(2*j)].blue * RGB_FP_FACTOR;
+			y += ((int) (0.257 * CONSTANT_FP_FACTOR) * r + (int) (0.504 * CONSTANT_FP_FACTOR) * g + (int) (0.098 * CONSTANT_FP_FACTOR) * b) >> SHIFT_BITS;
+			cb += ((int)(-0.148 * CONSTANT_FP_FACTOR) * r - (int) (0.291 * CONSTANT_FP_FACTOR) * g + (int) (0.439 * CONSTANT_FP_FACTOR) * b) >> SHIFT_BITS;
+			cr += ((int) (0.439 * CONSTANT_FP_FACTOR) * r - (int) (0.368 * CONSTANT_FP_FACTOR) * g - (int) (0.071 * CONSTANT_FP_FACTOR) * b) >> SHIFT_BITS;
 
-			//printf("divisor: %f\n", division);
-			ycc[i][j].y = y * division + 16.0f;
-			ycc[i][j].cb = cb * division + 128.0f;
-			ycc[i][j].cr = cr * division + 128.0f;
+			r = rgb_arr[(2*i)][(2*j)+1].red * RGB_FP_FACTOR;
+			g = rgb_arr[(2*i)][(2*j)+1].green * RGB_FP_FACTOR;
+			b = rgb_arr[(2*i)][(2*j)+1].blue * RGB_FP_FACTOR;
+			y += ((int) (0.257 * CONSTANT_FP_FACTOR) * r + (int) (0.504 * CONSTANT_FP_FACTOR) * g + (int) (0.098 * CONSTANT_FP_FACTOR) * b) >> SHIFT_BITS;
+			cb += ((int)(-0.148 * CONSTANT_FP_FACTOR) * r - (int) (0.291 * CONSTANT_FP_FACTOR) * g + (int) (0.439 * CONSTANT_FP_FACTOR) * b) >> SHIFT_BITS;
+			cr += ((int) (0.439 * CONSTANT_FP_FACTOR) * r - (int) (0.368 * CONSTANT_FP_FACTOR) * g - (int) (0.071 * CONSTANT_FP_FACTOR) * b) >> SHIFT_BITS;
+			
+			r = rgb_arr[(2*i)+1][(2*j)].red * RGB_FP_FACTOR;
+			g = rgb_arr[(2*i)+1][(2*j)].green * RGB_FP_FACTOR;
+			b = rgb_arr[(2*i)+1][(2*j)].blue * RGB_FP_FACTOR;
+			y += ((int) (0.257 * CONSTANT_FP_FACTOR) * r + (int) (0.504 * CONSTANT_FP_FACTOR) * g + (int) (0.098 * CONSTANT_FP_FACTOR) * b) >> SHIFT_BITS;
+			cb += ((int)(-0.148 * CONSTANT_FP_FACTOR) * r - (int) (0.291 * CONSTANT_FP_FACTOR) * g + (int) (0.439 * CONSTANT_FP_FACTOR) * b) >> SHIFT_BITS;
+			cr += ((int) (0.439 * CONSTANT_FP_FACTOR) * r - (int) (0.368 * CONSTANT_FP_FACTOR) * g - (int) (0.071 * CONSTANT_FP_FACTOR) * b) >> SHIFT_BITS;
+			
+			r = rgb_arr[(2*i)+1][(2*j)+1].red * RGB_FP_FACTOR;
+			g = rgb_arr[(2*i)+1][(2*j)+1].green * RGB_FP_FACTOR;
+			b = rgb_arr[(2*i)+1][(2*j)+1].blue * RGB_FP_FACTOR;
+			y += ((int) (0.257 * CONSTANT_FP_FACTOR) * r + (int) (0.504 * CONSTANT_FP_FACTOR) * g + (int) (0.098 * CONSTANT_FP_FACTOR) * b) >> SHIFT_BITS;
+			cb += ((int)(-0.148 * CONSTANT_FP_FACTOR) * r - (int) (0.291 * CONSTANT_FP_FACTOR) * g + (int) (0.439 * CONSTANT_FP_FACTOR) * b) >> SHIFT_BITS;
+			cr += ((int) (0.439 * CONSTANT_FP_FACTOR) * r - (int) (0.368 * CONSTANT_FP_FACTOR) * g - (int) (0.071 * CONSTANT_FP_FACTOR) * b) >> SHIFT_BITS;
 
-			printf("%d %d y: %f cb: %f cr: %f\n", i, j, ycc[i][j].y, ycc[i][j].cb, ycc[i][j].cr);
+			y = y / 4;
+			cb = cb / 4;
+			cr = cr / 4;
+
+			ycc->data_array[i][j].y = y * division + 16.0f;
+			ycc->data_array[i][j].cb = cb * division + 128.0f;
+			ycc->data_array[i][j].cr = cr * division + 128.0f;
 		}
 	}
 }
 
-YCC_prime_t** allocate_ycc_array(int height, int width) {
+ycc_prime_array* allocate_ycc_array(rgb_prime_array* rgb) {
 	int i;
 
-	YCC_prime_t** ycc = mmalloc(sizeof(YCC_prime_t*) * height);
-	for (i = 0; i < height; i++) {
-		ycc[i] = mmalloc(sizeof(YCC_prime_t) * width);
+	ycc_prime_array* ycc = mmalloc(sizeof(ycc_prime_array));
+
+	ycc->height = (rgb->height)/2;
+	ycc->width_px = (rgb->width_px)/2;
+
+	YCC_prime_t** array = mmalloc(sizeof(YCC_prime_t*) * ycc->height);
+	for (i = 0; i < ycc->height; i++) {
+		array[i] = mmalloc(sizeof(YCC_prime_t) * ycc->width_px);
 	}
+
+	ycc->data_array = array;
 
 	return ycc;
 }
 
-void free_ycc_array(YCC_prime_t** ycc, int height) {
+void free_ycc_array(ycc_prime_array* ycc) {
 	int i;
 
-	for (i = 0; i < height; i++) {
-		free(ycc[i]);
+	for (i = 0; i < ycc->height; i++) {
+		free(ycc->data_array[i]);
 	}
+	free(ycc->data_array);
 	free(ycc);
 }
 

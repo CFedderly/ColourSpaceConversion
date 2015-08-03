@@ -8,7 +8,7 @@
 
 void convert_rgb_to_ycc(ycc_prime_array* ycc, rgb_prime_array* rgb) {
 
-	// declare as a local variable -> won't ever change, don't need to do pointer chain every time.
+	// declare as a local constant -> won't ever change, don't need to do pointer chain every time.
 	RGB_prime_t** rgb_arr = rgb->data_array; 
 
 	// declare constants for all of the factors in the conversion
@@ -24,68 +24,55 @@ void convert_rgb_to_ycc(ycc_prime_array* ycc, rgb_prime_array* rgb) {
 	const int32_t cr_b = -581;
 
 	// suggest to the compiler to keep these variables in registers 
-	register int32_t r, g, b;
+	int32_t r, g, b;
 
 	int32_t y, cb, cr;
 
 	float division = (float) 1 / FP_DIVISOR;
 
-	unsigned int i, j;
-
-	// declare loop upper limits as local variables
-	unsigned int height = ycc->height;
-	unsigned int width = ycc->width_px;
-	unsigned int row, row_next, col, col_next;
+	int i, j;
 
 	// for every row of pixels
-	for (i = 0; i < height; i++) {
-
-		// declare array indexes here so that they don't have to be calculated multiple
-		// times during the body of the for-loop
-		row = i << 1;
-		row_next = (i << 1) + 1;
+	for (i = 0; i < ycc->height; i++) {
 		// for every pixel in the row
 		// average the conversion between the pixels in a 2x2 square of pixels -> get 1 pixel
 		// the ycc version of the bmp will have 1:4 pixels to the original bmp
-		for (j = 0; j < width; j++) {
+		for (j = 0; j < ycc->width_px; j++) {
 
-			y = cb = cr = 0;	
+			y = cb = cr = 0;
 
-			col = j << 1;
-			col_next = (j << 1) + 1;
-
-			r = rgb_arr[row][col].red * RGB_FP_FACTOR;
-			g = rgb_arr[row][col].green * RGB_FP_FACTOR;
-			b = rgb_arr[row][col].blue * RGB_FP_FACTOR;
+			r = rgb_arr[(2*i)][(2*j)].red * RGB_FP_FACTOR;
+			g = rgb_arr[(2*i)][(2*j)].green * RGB_FP_FACTOR;
+			b = rgb_arr[(2*i)][(2*j)].blue * RGB_FP_FACTOR;
 			y += ((y_r * r) + (y_g * g) + (y_b * b)) >> SHIFT_BITS;
 			cb += ((cb_r * r) + (cb_g * g) + (cb_b_cr_r * b)) >> SHIFT_BITS;
 			cr += ((cb_b_cr_r * r) + (cr_g * g) + (cr_b * b)) >> SHIFT_BITS;
 
-			r = rgb_arr[row][col_next].red * RGB_FP_FACTOR;
-			g = rgb_arr[row][col_next].green * RGB_FP_FACTOR;
-			b = rgb_arr[row][col_next].blue * RGB_FP_FACTOR;
-			cr += ((cb_b_cr_r * r) + (cr_g * g) + (cr_b * b)) >> SHIFT_BITS;
-			cb += ((cb_r * r) + (cb_g * g) + (cb_b_cr_r * b)) >> SHIFT_BITS;
-			y += ((y_r * r) + (y_g * g) + (y_b * b)) >> SHIFT_BITS;
-
-			r = rgb_arr[row_next][col].red * RGB_FP_FACTOR;
-			g = rgb_arr[row_next][col].green * RGB_FP_FACTOR;
-			b = rgb_arr[row_next][col].blue * RGB_FP_FACTOR;
+			r = rgb_arr[(2*i)][(2*j)+1].red * RGB_FP_FACTOR;
+			g = rgb_arr[(2*i)][(2*j)+1].green * RGB_FP_FACTOR;
+			b = rgb_arr[(2*i)][(2*j)+1].blue * RGB_FP_FACTOR;
 			y += ((y_r * r) + (y_g * g) + (y_b * b)) >> SHIFT_BITS;
 			cb += ((cb_r * r) + (cb_g * g) + (cb_b_cr_r * b)) >> SHIFT_BITS;
 			cr += ((cb_b_cr_r * r) + (cr_g * g) + (cr_b * b)) >> SHIFT_BITS;
 
-			r = rgb_arr[row_next][col_next].red * RGB_FP_FACTOR;
-			g = rgb_arr[row_next][col_next].green * RGB_FP_FACTOR;
-			b = rgb_arr[row_next][col_next].blue * RGB_FP_FACTOR;
-			cr += ((cb_b_cr_r * r) + (cr_g * g) + (cr_b * b)) >> SHIFT_BITS;
-			cb += ((cb_r * r) + (cb_g * g) + (cb_b_cr_r * b)) >> SHIFT_BITS;
+			r = rgb_arr[(2*i)+1][(2*j)].red * RGB_FP_FACTOR;
+			g = rgb_arr[(2*i)+1][(2*j)].green * RGB_FP_FACTOR;
+			b = rgb_arr[(2*i)+1][(2*j)].blue * RGB_FP_FACTOR;
 			y += ((y_r * r) + (y_g * g) + (y_b * b)) >> SHIFT_BITS;
+			cb += ((cb_r * r) + (cb_g * g) + (cb_b_cr_r * b)) >> SHIFT_BITS;
+			cr += ((cb_b_cr_r * r) + (cr_g * g) + (cr_b * b)) >> SHIFT_BITS;
+
+			r = rgb_arr[(2*i)+1][(2*j)+1].red * RGB_FP_FACTOR;
+			g = rgb_arr[(2*i)+1][(2*j)+1].green * RGB_FP_FACTOR;
+			b = rgb_arr[(2*i)+1][(2*j)+1].blue * RGB_FP_FACTOR;
+			y += ((y_r * r) + (y_g * g) + (y_b * b)) >> SHIFT_BITS;
+			cb += ((cb_r * r) + (cb_g * g) + (cb_b_cr_r * b)) >> SHIFT_BITS;
+			cr += ((cb_b_cr_r * r) + (cr_g * g) + (cr_b * b)) >> SHIFT_BITS;
 			
 			// use bit shift instead of division for averaging
-			y = y >> 2;
-			cb = cb >> 2;
-			cr = cr >> 2;
+			y = y / 4;
+			cb = cb / 4;
+			cr = cr / 4;
 
 			ycc->data_array[i][j].y = y * division + 16.0f;
 			ycc->data_array[i][j].cb = cb * division + 128.0f;

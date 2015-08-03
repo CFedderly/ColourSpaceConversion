@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
 
 		rgb_array* rgb_after = allocate_rgb_array(rgb->height, rgb->width_px, rgb->row_padding);
 		convert_ycc_to_rgb(ycc, rgb_after);
-		//write_to_bmp(bmp, rgb_after);
+		//write_to_bmp(bmp, rgb_after);e
 
 		free_ycc_array(ycc);
 		free_rgb_array(rgb_after);

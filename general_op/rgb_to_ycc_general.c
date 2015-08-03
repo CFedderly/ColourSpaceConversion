@@ -42,8 +42,8 @@ void convert_rgb_to_ycc(ycc_prime_array* ycc, rgb_prime_array* rgb) {
 
 		// declare array indexes here so that they don't have to be calculated multiple
 		// times during the body of the for-loop
-		row = i * 2;
-		row_next = (i * 2) + 1;
+		row = i << 1;
+		row_next = (i << 1) + 1;
 		// for every pixel in the row
 		// average the conversion between the pixels in a 2x2 square of pixels -> get 1 pixel
 		// the ycc version of the bmp will have 1:4 pixels to the original bmp
@@ -51,8 +51,8 @@ void convert_rgb_to_ycc(ycc_prime_array* ycc, rgb_prime_array* rgb) {
 
 			y = cb = cr = 0;	
 
-			col = j * 2;
-			col_next = (j * 2) + 1;
+			col = j << 1;
+			col_next = (j << 1) + 1;
 
 			r = rgb_arr[row][col].red * RGB_FP_FACTOR;
 			g = rgb_arr[row][col].green * RGB_FP_FACTOR;
@@ -64,9 +64,9 @@ void convert_rgb_to_ycc(ycc_prime_array* ycc, rgb_prime_array* rgb) {
 			r = rgb_arr[row][col_next].red * RGB_FP_FACTOR;
 			g = rgb_arr[row][col_next].green * RGB_FP_FACTOR;
 			b = rgb_arr[row][col_next].blue * RGB_FP_FACTOR;
-			y += ((y_r * r) + (y_g * g) + (y_b * b)) >> SHIFT_BITS;
-			cb += ((cb_r * r) + (cb_g * g) + (cb_b_cr_r * b)) >> SHIFT_BITS;
 			cr += ((cb_b_cr_r * r) + (cr_g * g) + (cr_b * b)) >> SHIFT_BITS;
+			cb += ((cb_r * r) + (cb_g * g) + (cb_b_cr_r * b)) >> SHIFT_BITS;
+			y += ((y_r * r) + (y_g * g) + (y_b * b)) >> SHIFT_BITS;
 
 			r = rgb_arr[row_next][col].red * RGB_FP_FACTOR;
 			g = rgb_arr[row_next][col].green * RGB_FP_FACTOR;
@@ -78,9 +78,9 @@ void convert_rgb_to_ycc(ycc_prime_array* ycc, rgb_prime_array* rgb) {
 			r = rgb_arr[row_next][col_next].red * RGB_FP_FACTOR;
 			g = rgb_arr[row_next][col_next].green * RGB_FP_FACTOR;
 			b = rgb_arr[row_next][col_next].blue * RGB_FP_FACTOR;
-			y += ((y_r * r) + (y_g * g) + (y_b * b)) >> SHIFT_BITS;
-			cb += ((cb_r * r) + (cb_g * g) + (cb_b_cr_r * b)) >> SHIFT_BITS;
 			cr += ((cb_b_cr_r * r) + (cr_g * g) + (cr_b * b)) >> SHIFT_BITS;
+			cb += ((cb_r * r) + (cb_g * g) + (cb_b_cr_r * b)) >> SHIFT_BITS;
+			y += ((y_r * r) + (y_g * g) + (y_b * b)) >> SHIFT_BITS;
 			
 			// use bit shift instead of division for averaging
 			y = y >> 2;

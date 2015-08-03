@@ -45,7 +45,7 @@ void convert_ycc_to_rgb(ycc_prime_array* ycc, rgb_array* rgb) {
 			rgb->data_array[(i*2)+1][(j*2)+1].green = g;
 			rgb->data_array[(i*2)+1][(j*2)+1].blue = b;
 
-			//printf("%d %d r: %d g: %d b: %d\n", i, j, rgb->data_array[i][j].red, rgb->data_array[i][j].green, rgb->data_array[i][j].blue);
+			printf("%d %d r: %d g: %d b: %d\n", i, j, rgb->data_array[i][j].red, rgb->data_array[i][j].green, rgb->data_array[i][j].blue);
 
 		}
 	}

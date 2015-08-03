@@ -15,8 +15,8 @@ void convert_rgb_to_ycc(ycc_prime_array* ycc, rgb_prime_array* rgb) {
 	// use factor of 2^13, constants are signed ints
 	// these won't ever change, don't need to be computed dynamically
 	const int32_t y_r = 2105;
-	const int32_t y_b = 4128;
-	const int32_t y_g = 802;
+	const int32_t y_g = 4128;
+	const int32_t y_b = 802;
 	const int32_t cb_r = -1212;
 	const int32_t cb_g = -2383;
 	const int32_t cb_b_cr_r = 3596;

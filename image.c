@@ -157,19 +157,36 @@ static void write_pixel_array(FILE* f, rgb_array* rgb) {
 }
 
 static void get_rgb_pixel_array(unsigned char* img_data, rgb_prime_array* rgb) {
-	int width = rgb->width_px;
-	int height = rgb->height;
+	int width, height, width_odd, height_odd;
 	int padding = rgb->row_padding;
+
+	// check to see that both the row and the column have an even number of pixels
+	// if not, need to replicate the last row or column
+	// this is necessary for downsampling
+	height_odd = width_odd = 0;
+	if (rgb->height & 0x01) {
+		height = rgb->height + 1;
+		height_odd = 1;
+	} else {
+		height = rgb->height;
+	}
+
+	if (rgb->width_px & 0x01) {
+		width = rgb->width_px + 1;
+		width_odd = 1;
+	} else {
+		width = rgb->width_px;
+	}
 
 	RGB_prime_t** array = mmalloc(height * sizeof(RGB_prime_t*));
 	RGB_prime_t* temp = mmalloc(sizeof(RGB_prime_t));
 
 	int i, j, k;
 	// for every row of pixels
-	for (i = 0; i < height; i++) {
+	for (i = 0; i < rgb->height; i++) {
 		// allocate a RGB object for each pixel
 		array[i] = mmalloc(width * sizeof(RGB_prime_t));
-		for (j = 0; j < width ; j++) {
+		for (j = 0; j < rgb->width_px ; j++) {
 			temp->blue = ((float) *img_data++) / RGB_NORMALIZE;
 			temp->green = ((float) *img_data++) / RGB_NORMALIZE;			
 			temp->red = ((float) *img_data++) / RGB_NORMALIZE;
@@ -181,6 +198,21 @@ static void get_rgb_pixel_array(unsigned char* img_data, rgb_prime_array* rgb) {
 			*img_data++;
 		}
 	}
+
+	if (height_odd) {
+		for (i = 0; i < rgb->width_px; i++) {
+			array[height][i] = array[height - 1][i];
+		}
+		rgb->height = height;
+	}
+
+	if (width_odd) {
+		for (j = 0; j < height; j++) {
+			array[j][width] = array[j][width - 1];
+		}
+		rgb->width_px = width;
+	}
+
 	rgb->data_array = array;
 	free(temp);
 }

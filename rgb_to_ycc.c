@@ -32,7 +32,7 @@ void convert_rgb_to_ycc(YCC_prime_t** ycc, rgb_prime_array* rgb) {
 			ycc[i][j].cb = cb * division + 128.0f;
 			ycc[i][j].cr = cr * division + 128.0f;
 
-			printf("%d %d y: %f cb: %f cr: %f\n", i, j, ycc[i][j].y, ycc[i][j].cb, ycc[i][j].cr);
+			//printf("%d %d y: %f cb: %f cr: %f\n", i, j, ycc[i][j].y, ycc[i][j].cb, ycc[i][j].cr);
 		}
 	}
 }

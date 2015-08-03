@@ -1,6 +1,6 @@
 #include "image.h"
 #include "image.c"
-#include "rgb_to_ycc.c"
+#include "rgb_to_ycc_unop.c"
 #include "ycc_to_rgb.c"
 
 int main(int argc, char* argv[]) {

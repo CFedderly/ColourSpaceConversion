@@ -1,0 +1,162 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  ms/call  ms/call  name    
+ 25.00      0.22     0.22        1   220.00   220.00  convert_rgb_to_ycc
+ 19.32      0.39     0.17        1   170.00   170.00  convert_ycc_to_rgb
+ 14.77      0.52     0.13        1   130.00   130.00  get_rgb_pixel_array
+ 10.23      0.61     0.09                             __aeabi_fadd
+  6.25      0.67     0.06                             __divsf3
+  5.11      0.71     0.05                             __aeabi_dmul
+  4.55      0.75     0.04                             __mulsf3
+  3.98      0.79     0.04                             __aeabi_ui2f
+  2.27      0.81     0.02                             __adddf3
+  2.27      0.83     0.02                             __subsf3
+  1.70      0.84     0.02                             __fixsfsi
+  1.14      0.85     0.01                             __aeabi_frsub
+  1.14      0.86     0.01                             __floatdisf
+  0.57      0.87     0.01                             __aeabi_i2f
+  0.57      0.87     0.01                             __extendsfdf2
+  0.57      0.88     0.01                             __floatdidf
+  0.57      0.88     0.01                             __floatsidf
+  0.00      0.88     0.00     1509     0.00     0.00  mmalloc
+  0.00      0.88     0.00        1     0.00     0.00  allocate_rgb_array
+  0.00      0.88     0.00        1     0.00     0.00  allocate_ycc_array
+  0.00      0.88     0.00        1     0.00     0.00  free_bmp_info
+  0.00      0.88     0.00        1     0.00     0.00  free_pixel_array
+  0.00      0.88     0.00        1     0.00     0.00  free_rgb_array
+  0.00      0.88     0.00        1     0.00     0.00  free_ycc_array
+  0.00      0.88     0.00        1     0.00     0.00  get_bmp_info
+  0.00      0.88     0.00        1     0.00   130.00  get_pixel_array
+  0.00      0.88     0.00        1     0.00   520.01  main
+  0.00      0.88     0.00        1     0.00     0.00  read_bmp_info
+
+			Call graph
+
+
+granularity: each sample hit covers 2 byte(s) for 1.14% of 0.88 seconds
+
+index % time    self  children    called     name
+                0.00    0.52       1/1           __libc_start_main [2]
+[1]     59.1    0.00    0.52       1         main [1]
+                0.22    0.00       1/1           convert_rgb_to_ycc [3]
+                0.17    0.00       1/1           convert_ycc_to_rgb [4]
+                0.00    0.13       1/1           get_pixel_array [5]
+                0.00    0.00       1/1           get_bmp_info [28]
+                0.00    0.00       1/1           allocate_ycc_array [23]
+                0.00    0.00       1/1           allocate_rgb_array [22]
+                0.00    0.00       1/1           free_ycc_array [27]
+                0.00    0.00       1/1           free_rgb_array [26]
+                0.00    0.00       1/1           free_bmp_info [24]
+                0.00    0.00       1/1           free_pixel_array [25]
+-----------------------------------------------
+                                                 <spontaneous>
+[2]     59.1    0.00    0.52                 __libc_start_main [2]
+                0.00    0.52       1/1           main [1]
+-----------------------------------------------
+                0.22    0.00       1/1           main [1]
+[3]     25.0    0.22    0.00       1         convert_rgb_to_ycc [3]
+-----------------------------------------------
+                0.17    0.00       1/1           main [1]
+[4]     19.3    0.17    0.00       1         convert_ycc_to_rgb [4]
+-----------------------------------------------
+                0.00    0.13       1/1           main [1]
+[5]     14.8    0.00    0.13       1         get_pixel_array [5]
+                0.13    0.00       1/1           get_rgb_pixel_array [6]
+                0.00    0.00       1/1509        mmalloc [21]
+-----------------------------------------------
+                0.13    0.00       1/1           get_pixel_array [5]
+[6]     14.8    0.13    0.00       1         get_rgb_pixel_array [6]
+                0.00    0.00     602/1509        mmalloc [21]
+-----------------------------------------------
+                                                 <spontaneous>
+[7]     10.2    0.09    0.00                 __aeabi_fadd [7]
+-----------------------------------------------
+                                                 <spontaneous>
+[8]      6.3    0.06    0.00                 __divsf3 [8]
+-----------------------------------------------
+                                                 <spontaneous>
+[9]      5.1    0.05    0.00                 __aeabi_dmul [9]
+-----------------------------------------------
+                                                 <spontaneous>
+[10]     4.5    0.04    0.00                 __mulsf3 [10]
+-----------------------------------------------
+                                                 <spontaneous>
+[11]     4.0    0.04    0.00                 __aeabi_ui2f [11]
+-----------------------------------------------
+                                                 <spontaneous>
+[12]     2.3    0.02    0.00                 __adddf3 [12]
+-----------------------------------------------
+                                                 <spontaneous>
+[13]     2.3    0.02    0.00                 __subsf3 [13]
+-----------------------------------------------
+                                                 <spontaneous>
+[14]     1.7    0.02    0.00                 __fixsfsi [14]
+-----------------------------------------------
+                                                 <spontaneous>
+[15]     1.1    0.01    0.00                 __aeabi_frsub [15]
+-----------------------------------------------
+                                                 <spontaneous>
+[16]     1.1    0.01    0.00                 __floatdisf [16]
+-----------------------------------------------
+                                                 <spontaneous>
+[17]     0.6    0.01    0.00                 __aeabi_i2f [17]
+-----------------------------------------------
+                                                 <spontaneous>
+[18]     0.6    0.01    0.00                 __extendsfdf2 [18]
+-----------------------------------------------
+                                                 <spontaneous>
+[19]     0.6    0.01    0.00                 __floatdidf [19]
+-----------------------------------------------
+                                                 <spontaneous>
+[20]     0.6    0.01    0.00                 __floatsidf [20]
+-----------------------------------------------
+                0.00    0.00       1/1509        get_pixel_array [5]
+                0.00    0.00       2/1509        get_bmp_info [28]
+                0.00    0.00     302/1509        allocate_ycc_array [23]
+                0.00    0.00     602/1509        get_rgb_pixel_array [6]
+                0.00    0.00     602/1509        allocate_rgb_array [22]
+[21]     0.0    0.00    0.00    1509         mmalloc [21]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[22]     0.0    0.00    0.00       1         allocate_rgb_array [22]
+                0.00    0.00     602/1509        mmalloc [21]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[23]     0.0    0.00    0.00       1         allocate_ycc_array [23]
+                0.00    0.00     302/1509        mmalloc [21]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[24]     0.0    0.00    0.00       1         free_bmp_info [24]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[25]     0.0    0.00    0.00       1         free_pixel_array [25]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[26]     0.0    0.00    0.00       1         free_rgb_array [26]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[27]     0.0    0.00    0.00       1         free_ycc_array [27]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[28]     0.0    0.00    0.00       1         get_bmp_info [28]
+                0.00    0.00       2/1509        mmalloc [21]
+                0.00    0.00       1/1           read_bmp_info [29]
+-----------------------------------------------
+                0.00    0.00       1/1           get_bmp_info [28]
+[29]     0.0    0.00    0.00       1         read_bmp_info [29]
+-----------------------------------------------
+
+Index by function name
+
+  [12] __adddf3               [16] __floatdisf            [26] free_rgb_array
+   [9] __aeabi_dmul           [20] __floatsidf            [27] free_ycc_array
+   [7] __aeabi_fadd           [10] __mulsf3               [28] get_bmp_info
+  [15] __aeabi_frsub          [13] __subsf3                [5] get_pixel_array
+  [17] __aeabi_i2f            [22] allocate_rgb_array      [6] get_rgb_pixel_array
+  [11] __aeabi_ui2f           [23] allocate_ycc_array      [1] main
+   [8] __divsf3                [3] convert_rgb_to_ycc     [21] mmalloc
+  [18] __extendsfdf2           [4] convert_ycc_to_rgb     [29] read_bmp_info
+  [14] __fixsfsi              [24] free_bmp_info
+  [19] __floatdidf            [25] free_pixel_array

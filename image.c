@@ -201,16 +201,17 @@ static void get_rgb_pixel_array(unsigned char* img_data, rgb_prime_array* rgb) {
 
 	if (height_odd) {
 		for (i = 0; i < rgb->width_px; i++) {
-			array[height][i] = array[height - 1][i];
+			array[height - 1][i] = array[height - 2][i];
 		}
 		rgb->height = height;
 	}
 
 	if (width_odd) {
 		for (j = 0; j < height; j++) {
-			array[j][width] = array[j][width - 1];
+			array[j][width - 1] = array[j][width - 2];
 		}
 		rgb->width_px = width;
+		rgb->row_padding = width % 4;
 	}
 
 	rgb->data_array = array;

@@ -15,14 +15,14 @@ int main(int argc, char* argv[]) {
 
 	//Make sure that the bmp file is 24bpp
 	if (rgb->bits_per_px == 24) {
-		YCC_prime_t** ycc = allocate_ycc_array(rgb->height, rgb->width_px);
+		ycc_prime_array* ycc = allocate_ycc_array(rgb);
 		convert_rgb_to_ycc(ycc, rgb);
 
 		rgb_array* rgb_after = allocate_rgb_array(rgb->height, rgb->width_px, rgb->row_padding);
 		convert_ycc_to_rgb(ycc, rgb_after);
 		write_to_bmp(bmp, rgb_after);
 
-		free_ycc_array(ycc, rgb->height);
+		free_ycc_array(ycc);
 		free_rgb_array(rgb_after);
 	} else {
 		printf("Can only read 24bpp bmp files to convert from rgb to ycc.\n");
